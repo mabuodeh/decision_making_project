@@ -62,7 +62,7 @@ class Deck(object):
         """
         # self.rank = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         # self.suit = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
-        self.rank = ['2', '3', 'K', 'Q']
+        self.rank = ['2', '3', 'K', 'Q', 'J', '10', '9', '8']
         self.suit = ['Clubs', 'Hearts']
         self.deck = [Card(r, s) for r in self.rank for s in self.suit]
         random.shuffle(self.deck)
