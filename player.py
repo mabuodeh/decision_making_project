@@ -7,3 +7,26 @@ class Player:
         print(self.name + '\'s cards:')
         for c in self.cards:
             print(c)
+
+    def get_greedy_card(self, suit):
+        # cards for the current round (same suit)
+        round_cards = []
+        for card in self.cards:
+            if card.suit == suit:
+                round_cards.append(card)
+
+        if round_cards:
+            temp = round_cards[0]
+            for card in round_cards:
+                if card < temp:
+                    temp = card
+            print(self.name + '\'s lowest ' + suit + ':', temp)
+            index = self.cards.index(temp)
+            g_card = self.cards.pop(index)
+            # print(index)
+            for c in self.cards:
+                print(c)
+            return g_card
+
+    def __str__(self):
+        print(self.name)

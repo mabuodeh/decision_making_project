@@ -107,7 +107,7 @@ class Deck(object):
 
 def deal_cards(deck, p1, p2, p3, p4):
     while len(graveyard) <= 52 and len(deck.deck) > 0:
-        print('in while', len(deck.deck), len(graveyard))
+        # print('in while', len(deck.deck), len(graveyard))
         p1.cards.append(deck.deal())
         p2.cards.append(deck.deal())
         p3.cards.append(deck.deal())

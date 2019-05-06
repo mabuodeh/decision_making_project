@@ -25,15 +25,6 @@ p1.print_cards()
 # p1.cards.sort()
 # p1.print_cards()
 
-# cards for the current round (same suit)
-round_cards = []
-for card in p1.cards:
-    if card.suit == 'Clubs':
-        round_cards.append(card)
 
-if round_cards:
-    temp = p1.cards[0]
-    for card in p1.cards:
-        if card < temp:
-            temp = card
-print('lowest club:', temp)
+g_card = p1.get_greedy_card('Clubs')
+print('greedy card:', g_card)
