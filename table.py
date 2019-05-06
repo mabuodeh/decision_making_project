@@ -18,13 +18,13 @@ class Table:
         self.fourth_player = None
 
     def get_round_player(self, cur_suit):
-        player_list = [(self.first_player, self.first_card),
-        (self.second_player, self.second_card),
-        (self.third_player, self.third_card),
-        (self.fourth_player, self.fourth_card)]
+        player_list = [{"p": self.first_player, "c": self.first_card},
+        {"p": self.second_player, "c": self.second_card},
+        {"p": self.third_player, "c": self.third_card},
+        {"p": self.fourth_player, "c": self.fourth_card}]
 
         for idx, pl in enumerate(player_list):
-            if pl[1].suit == cur_suit:
+            if pl["c"].suit == cur_suit:
                 start_index = idx
                 break
         player_list[0], player_list[idx] = player_list[idx], player_list[0]
@@ -35,8 +35,22 @@ class Table:
         iter_player_list = iter(player_list)
         next(iter_player_list)
         for pl in iter_player_list:
-            if pl[1].suit == ret_player[1].suit and pl[1] > ret_player[1]:
+            if pl["c"].suit == ret_player["c"].suit and pl["c"] > ret_player["c"]:
                 ret_player = pl
+
+        # print("swap procedure, current card:")
+        # print(ret_player["c"])
+        # print("cards in hand:")
+        # for cr in ret_player["p"].cards:
+        #     print(cr)
+        #     if cr.suit == ret_player["c"].suit and cr > ret_player["c"]:
+        #         print("swapping")
+        #         print(cr)
+        #         print(ret_player["c"])
+        #         cr, ret_player["c"] = ret_player["c"], cr
+
+        ret_player["p"].cards_taken.extend([player_list[0]["c"],
+        player_list[1]["c"], player_list[2]["c"], player_list[3]["c"]])
         return ret_player
 
 

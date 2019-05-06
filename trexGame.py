@@ -73,8 +73,14 @@ table.fourth_player = cur_player
 # when all 4 players play, check which card is greatest
 # give cards to that player
 winner_tuple = table.get_round_player(rand_suit)
-print(winner_tuple[0])
-print(winner_tuple[1])
+print('cards taken by ' + winner_tuple["p"].name + ' :')
+for ctaken in winner_tuple["p"].cards_taken:
+    print(ctaken)
+
+# p1.print_cards()
+# p2.print_cards()
+# p3.print_cards()
+# p4.print_cards()
 
 # g_card = p1.get_greedy_card('Clubs')
 # print('greedy card:', g_card)
