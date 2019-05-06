@@ -5,6 +5,12 @@ class Player:
         self.name = name
         self.cards = []
 
+def print_player_cards(pl):
+    print(pl.name + '\'s cards:')
+    for c in pl.cards:
+        print(c)
+
+
 p1 = Player('player 1')
 p2 = Player('player 2')
 p3 = Player('player 3')
@@ -15,16 +21,7 @@ deck = Deck()
 
 deal_cards(deck, p1, p2, p3, p4)
 
-print('player1\'s cards:')
-print(len(p1.cards))
-for c in p1.cards:
-    print(c)
-print('player2\'s cards:')
-for c in p2.cards:
-    print(c)
-print('player3\'s cards:')
-for c in p3.cards:
-    print(c)
-print('player4\'s cards:')
-for c in p4.cards:
-    print(c)
+print_player_cards(p1)
+print_player_cards(p2)
+print_player_cards(p3)
+print_player_cards(p4)
