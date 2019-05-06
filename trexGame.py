@@ -20,10 +20,10 @@ table = Table()
 
 deal_cards(deck, p1, p2, p3, p4)
 
-p1.print_cards()
-p2.print_cards()
-p3.print_cards()
-p4.print_cards()
+# p1.print_cards()
+# p2.print_cards()
+# p3.print_cards()
+# p4.print_cards()
 
 # show_lowest_card(p1)
 # p1.cards.sort()
@@ -47,15 +47,31 @@ cur_player = player_list[cur_player_index]
 # while len(p1.cards) > 0:
     # starting player plays greedy card of random suit
 rand_suit = random.choice(deck_suits)
-# print(rand_suit)
-# get suit of greedy card
-g_card = cur_player.get_greedy_card(rand_suit)
+
+# first player, get suit of greedy card
+table.first_card = cur_player.get_greedy_card(rand_suit)
+table.first_player = cur_player
+
 # check if next player has card of same suit to play
-#   next_player_index = (cur_player_index + 1)%4)
-print('cur', cur_player_index)
-next_player_index = (cur_player_index + 1) % 4
-print(next_player_index)
-cur_player = player_list[next_player_index]
+#   cur_player_index = (cur_player_index + 1)%4)
+cur_player_index = (cur_player_index + 1) % 4
+cur_player = player_list[cur_player_index]
+
+# second player
+table.second_card = cur_player.get_greedy_card(rand_suit)
+table.second_player = cur_player
+cur_player_index = (cur_player_index + 1) % 4
+cur_player = player_list[cur_player_index]
+
+# third player
+table.third_card = cur_player.get_greedy_card(rand_suit)
+table.third_player = cur_player
+cur_player_index = (cur_player_index + 1) % 4
+cur_player = player_list[cur_player_index]
+
+# fourth player
+table.fourth_card = cur_player.get_greedy_card(rand_suit)
+table.fourth_player = cur_player
 
 # if not, plays greedy card of some other suit
 # when all 4 players play, check which card is greatest

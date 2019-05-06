@@ -34,9 +34,9 @@ class Player:
         else:
             temp = diff_cards[0]
             for card in diff_cards:
-                if card < temp:
+                if card > temp:
                     temp = card
-            print(self.name + '\'s lowest non-' + suit + ':', temp)
+            print(self.name + '\'s highest non-' + suit + ':', temp)
             index = self.cards.index(temp)
             g_card = self.cards.pop(index)
             # print(index)
