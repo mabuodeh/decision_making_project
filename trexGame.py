@@ -44,38 +44,38 @@ elif Card('7', 'Hearts') in p4.cards:
 
 cur_player = player_list[cur_player_index]
 # enter loop of game (while player 1 still has cards)
-# while len(p1.cards) > 0:
-    # starting player plays greedy card of random suit
-rand_suit = cur_player.get_random_suit()
+while len(p1.cards) > 0:
+    rand_suit = cur_player.get_random_suit()
 
-# first player, get suit of greedy card
-table.first_card = cur_player.get_greedy_card(rand_suit)
-table.first_player = cur_player
+    # first player, get suit of greedy card
+    table.first_card = cur_player.get_greedy_card(rand_suit)
+    table.first_player = cur_player
 
-# second player
-cur_player_index = (cur_player_index + 1) % 4
-cur_player = player_list[cur_player_index]
-table.second_card = cur_player.get_greedy_card(rand_suit)
-table.second_player = cur_player
+    # second player
+    cur_player_index = (cur_player_index + 1) % 4
+    cur_player = player_list[cur_player_index]
+    table.second_card = cur_player.get_greedy_card(rand_suit)
+    table.second_player = cur_player
 
-# third player
-cur_player_index = (cur_player_index + 1) % 4
-cur_player = player_list[cur_player_index]
-table.third_card = cur_player.get_greedy_card(rand_suit)
-table.third_player = cur_player
+    # third player
+    cur_player_index = (cur_player_index + 1) % 4
+    cur_player = player_list[cur_player_index]
+    table.third_card = cur_player.get_greedy_card(rand_suit)
+    table.third_player = cur_player
 
-# fourth player
-cur_player_index = (cur_player_index + 1) % 4
-cur_player = player_list[cur_player_index]
-table.fourth_card = cur_player.get_greedy_card(rand_suit)
-table.fourth_player = cur_player
+    # fourth player
+    cur_player_index = (cur_player_index + 1) % 4
+    cur_player = player_list[cur_player_index]
+    table.fourth_card = cur_player.get_greedy_card(rand_suit)
+    table.fourth_player = cur_player
 
-# when all 4 players play, check which card is greatest
-# give cards to that player
-winner_tuple = table.get_round_player(rand_suit)
-print('cards taken by ' + winner_tuple["p"].name + ' :')
-for ctaken in winner_tuple["p"].cards_taken:
-    print(ctaken)
+    # when all 4 players play, check which card is greatest
+    # give cards to that player
+    winner_tuple = table.get_round_player(rand_suit)
+    print('cards taken by ' + winner_tuple["p"].name + ' :')
+    for ctaken in winner_tuple["p"].cards_taken:
+        print(ctaken)
+    print('\n')
 
 
 print(p1.calculate_score())
