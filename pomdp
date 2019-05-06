@@ -1,0 +1,127 @@
+// Partially Observable Trex game
+// The player can play a high heart, low heart, high club, low club.
+// The player can win rounds, take queens, or the king of hearts, all of which incur a cost.
+// The player cannot directly observe other players' cards, but can infer based on
+// the cards played on the table,
+// and this observation occurs after the player plays a card.
+// The player's goal is the win as little rounds as possible, and
+// (preferably) not take any queens or the king of hearts.
+//
+(variables
+  (hearts low high) // hearts: the percentage of low and high hearts the player has
+  (clubs low high) // clubs: the percentage of low and high clubs the player has
+  (theirHearts low high) // theirHearts: keeps track of about how many hearts are left
+  (theirClubs low high) // theirClubs: keeps track of about how many clubs are left
+
+  (queens qh qc) // queens: whether or not a queen of hearts or clubs was taken
+  (kingHeart yes no) // kingHeart: whether or not the king of hearts was taken
+  (roundWon yes no) // roundWon: whether or not a round was won
+  // may switch roundWon to be composed of rounds one two three etc.. instead
+)
+
+// observations are how many people played clubs and/or hearts,
+// as well as whether or not the player took queens, the king, and/or the round
+(observations	(theyPlayClubs one two three) // 1 player, 2, or all 3
+    (theyPlayHearts one two three)
+    (theyPlayClubs one two three)
+    (takenQ yes no)
+    (takenK yes no)
+    (takenRound yes no))
+
+// initial belief is a product of marginal beliefs
+// will set these before each game, then build the policy
+init [* (hearts	(low	(0.5))	(high	(0.5)))
+	(clubs	(low	(0.5))	(high	(0.5)))
+  (theirHearts	(low	(0.5))	(high	(0.5)))
+  (theirClubs	(low	(0.5))	(high	(0.5)))
+  (queens	(qh	(0.5))	(qc	(0.5)))
+  (kingHeart	(yes	(0.0))	(no	(1.0)))
+  (roundWon	(yes	(0.0))	(no	(1.0)))
+     ]
+//
+// some CPTS may be unnormalized -
+// this means all CPTs will be automatically normalized when read in
+unnormalised
+//
+// user keeps coffee if it has it
+// example of an unnormalized CPT -
+// hucno is a predefined dd of the form <xx><yy> where <xx> is a variable name and <yy> is a value
+// that variable can take on. the dd <xx><yy> then is 1 whenever xx' has value yy, zero otherwise.
+dd playClubsOF
+  (theirClubs' (low (theyPlayClubs' (one (0.6)) (two (0.3)) (three (0.1))))
+              (high (theyPlayClubs' (one (0.1)) (two (0.3)) (three (0.6)))))
+enddd
+dd playHeartsOF
+  (theirHearts' (low (theyPlayHearts' (one (0.6)) (two (0.3)) (three (0.1))))
+              (high (theyPlayHearts' (one (0.1)) (two (0.3)) (three (0.6)))))
+enddd
+
+// not sure how to write the takenQ, takenK, takenRound observation functions
+dd takenQOF
+  (queens' (qh (takenQ' (yes (1.0)) (no (0.0))))
+           (qc (takenQ' (yes (1.0)) (no (0.0)))))
+enddd
+dd takenKOF
+  (takenK' (yes (takenK' (yes (1.0)) (no (0.0))))
+           (no (takenK' (yes (0.0)) (no (1.0)))))
+enddd
+dd takenRoundOF
+  (roundWon' (yes (takenRound' (yes (1.0)) (no (0.0))))
+           (no (takenRound' (yes (0.0)) (no (1.0)))))
+enddd
+
+// actions
+action playLowHeart
+  hearts (hearts (low (hearts' (low (0.40)) (high (0.60))))
+                 (high (hearts' (low (0.60)) (high (0.40))))
+  )
+  clubs (SAMEclubs)
+  observe
+    theyPlayClubs (playClubsOF)
+    theyPlayHearts (playHeartsOF)
+  endobserve
+endaction
+
+action playHighHeart
+  hearts (hearts (low (hearts' (low (0.60)) (high (0.40))))
+                 (high (hearts' (low (0.40)) (high (0.60))))
+  )
+  clubs (SAMEclubs)
+  observe
+    theyPlayClubs (playClubsOF)
+    theyPlayHearts (playHeartsOF)
+  endobserve
+endaction
+
+action playLowClubs
+  clubs (clubs (low (clubs' (low (0.40)) (high (0.60))))
+                 (high (clubs' (low (0.60)) (high (0.40))))
+  )
+  hearts (SAMEhearts)
+  observe
+    theyPlayClubs (playClubsOF)
+    theyPlayHearts (playHeartsOF)
+  endobserve
+endaction
+
+action playHighClubs
+  clubs (clubs (low (clubs' (low (0.60)) (high (0.40))))
+                 (high (clubs' (low (0.40)) (high (0.60))))
+  )
+  hearts (SAMEhearts)
+  observe
+    theyPlayClubs (playClubsOF)
+    theyPlayHearts (playHeartsOF)
+  endobserve
+endaction
+
+
+reward [+  (takenQ	(yes	(-25.0))
+		(no	(0.0)))
+    (takenK	(yes	(-75.0))
+		(no	(0.0)))
+    (takenRound	(yes	(-15.0))
+    (no	(0.0)))]
+
+discount 0.9
+tolerance 0.001
