@@ -1,3 +1,5 @@
+import random
+
 class Player:
     def __init__(self, name):
         self.name = name
@@ -44,6 +46,11 @@ class Player:
                 print(c)
             return g_card
 
+    def get_random_suit(self):
+        suits = []
+        for cs in self.cards:
+            suits.append(cs.suit)
+        return random.choice(suits)
 
     def __str__(self):
-        print(self.name)
+        return self.name

@@ -13,6 +13,8 @@ graveyard = []
 
 
 def num_rank(rank):
+    if rank[0] == "10":
+        return 10
     if rank[0] == "J":
         return 11
     if rank[0] == "Q":
@@ -42,13 +44,15 @@ class Card(object):
         return t1 < t2
 
     def __gt__(self, other):
-        t1 = self.suit, self.rank
-        t2 = other.suit, other.rank
+        t1 = num_rank(self.rank)
+        t2 = num_rank(other.rank)
+        # t1 = self.suit, self.rank
+        # t2 = other.suit, other.rank
         return t1 > t2
 
     def __eq__(self, other):
-        t1 = self.suit, self.rank
-        t2 = other.suit, other.rank
+        t1 = self.suit, num_rank(self.rank)
+        t2 = other.suit, num_rank(other.rank)
         return t1 == t2
 
 class Deck(object):
