@@ -77,10 +77,8 @@ print('cards taken by ' + winner_tuple["p"].name + ' :')
 for ctaken in winner_tuple["p"].cards_taken:
     print(ctaken)
 
-# p1.print_cards()
-# p2.print_cards()
-# p3.print_cards()
-# p4.print_cards()
 
-# g_card = p1.get_greedy_card('Clubs')
-# print('greedy card:', g_card)
+print(p1.calculate_score())
+print(p2.calculate_score())
+print(p3.calculate_score())
+print(p4.calculate_score())

@@ -52,5 +52,25 @@ class Player:
             suits.append(cs.suit)
         return random.choice(suits)
 
+    def calculate_score(self):
+        # -15 / Round
+        rounds_won = len(self.cards_taken)/4
+        # -10 / Diamond
+        # -25 / Queen
+        # -75 / King of Hearts
+        diamonds_won = 0
+        queens_won = 0
+        king_hearts_won = 0
+        for c in self.cards_taken:
+            if c.suit == 'Diamonds':
+                diamonds_won += 1
+            if c.rank == 'Q':
+                queens_won += 1
+            if c.rank == 'K' and c.suit == 'Hearts':
+                king_hearts_won = 1
+        return ((rounds_won * -15) + (diamonds_won * -10) + (queens_won * -25) + (king_hearts_won * -75))
+
+
+
     def __str__(self):
         return self.name
