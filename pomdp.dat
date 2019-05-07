@@ -16,7 +16,6 @@
   (queens qh qc noQ) // queens: whether or not a queen of hearts or clubs was taken
   (kingHeart yes no) // kingHeart: whether or not the king of hearts was taken
   (roundWon yes no) // roundWon: whether or not a round was won
-  // may switch roundWon to be composed of rounds one two three etc.. instead
 )
 
 // observations are how many people played clubs and/or hearts,
@@ -38,16 +37,24 @@ init [* (hearts	(low	(0.5))	(high	(0.5)))
   (roundWon	(yes	(0.0))	(no	(1.0)))
      ]
 
-dd playClubsOF
-  (theirClubs' (low (theyPlayClubs' (one (0.6)) (two (0.3)) (three (0.1))))
+dd playClubsOnClubsOF
+  (theirClubs' (low (theyPlayClubs' (one (0.1)) (two (0.3)) (three (0.6))))
               (high (theyPlayClubs' (one (0.1)) (two (0.3)) (three (0.6)))))
 enddd
-dd playHeartsOF
-  (theirHearts' (low (theyPlayHearts' (one (0.6)) (two (0.3)) (three (0.1))))
+dd playHeartsOnClubsOF
+  (theirHearts' (low (theyPlayHearts' (one (0.8)) (two (0.15)) (three (0.05))))
+              (high (theyPlayHearts' (one (0.8)) (two (0.15)) (three (0.05)))))
+enddd
+
+dd playClubsOnHeartsOF
+  (theirClubs' (low (theyPlayClubs' (one (0.8)) (two (0.15)) (three (0.05))))
+              (high (theyPlayClubs' (one (0.8)) (two (0.15)) (three (0.05)))))
+enddd
+dd playHeartsOnHeartsOF
+  (theirHearts' (low (theyPlayHearts' (one (0.1)) (two (0.3)) (three (0.6))))
               (high (theyPlayHearts' (one (0.1)) (two (0.3)) (three (0.6)))))
 enddd
 
-// not sure how to write the takenQ, takenK, takenRound observation functions
 dd takenQOF
   (queens' (qh (takenQ' (yes (1.0)) (no (0.0))))
            (qc (takenQ' (yes (1.0)) (no (0.0))))
@@ -83,8 +90,8 @@ action playLowHeart
 
 
   observe
-    theyPlayClubs (playClubsOF)
-    theyPlayHearts (playHeartsOF)
+    theyPlayClubs (playClubsOnHeartsOF)
+    theyPlayHearts (playHeartsOnHeartsOF)
     takenQ (takenQOF)
     takenK (takenKOF)
     takenRound (takenRoundOF)
@@ -111,8 +118,8 @@ action playHighHeart
 
 
   observe
-    theyPlayClubs (playClubsOF)
-    theyPlayHearts (playHeartsOF)
+    theyPlayClubs (playClubsOnHeartsOF)
+    theyPlayHearts (playHeartsOnHeartsOF)
     takenQ (takenQOF)
     takenK (takenKOF)
     takenRound (takenRoundOF)
@@ -139,8 +146,8 @@ action playLowClubs
 
 
   observe
-    theyPlayClubs (playClubsOF)
-    theyPlayHearts (playHeartsOF)
+    theyPlayClubs (playClubsOnClubsOF)
+    theyPlayHearts (playHeartsOnClubsOF)
     takenQ (takenQOF)
     takenK (takenKOF)
     takenRound (takenRoundOF)
@@ -168,8 +175,8 @@ action playHighClubs
 
 
   observe
-    theyPlayClubs (playClubsOF)
-    theyPlayHearts (playHeartsOF)
+    theyPlayClubs (playClubsOnClubsOF)
+    theyPlayHearts (playHeartsOnClubsOF)
     takenQ (takenQOF)
     takenK (takenKOF)
     takenRound (takenRoundOF)
@@ -178,10 +185,10 @@ endaction
 
 
 reward [+
-    //(takenQ	(yes	(-25.0))
-		//(no	(0.0)))
-    //(takenK	(yes	(-75.0))
-		//(no	(0.0)))
+    (takenQ	(yes	(-25.0))
+		(no	(0.0)))
+    (takenK	(yes	(-75.0))
+		(no	(0.0)))
     (takenRound	(yes	(-15.0))
     (no	(0.0)))
     ]
