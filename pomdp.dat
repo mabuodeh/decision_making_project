@@ -13,7 +13,7 @@
   (theirHearts low high) // theirHearts: keeps track of about how many hearts are left
   (theirClubs low high) // theirClubs: keeps track of about how many clubs are left
 
-  (queens qh qc) // queens: whether or not a queen of hearts or clubs was taken
+  (queens qh qc noQ) // queens: whether or not a queen of hearts or clubs was taken
   (kingHeart yes no) // kingHeart: whether or not the king of hearts was taken
   (roundWon yes no) // roundWon: whether or not a round was won
   // may switch roundWon to be composed of rounds one two three etc.. instead
@@ -23,7 +23,6 @@
 // as well as whether or not the player took queens, the king, and/or the round
 (observations	(theyPlayClubs one two three) // 1 player, 2, or all 3
     (theyPlayHearts one two three)
-    (theyPlayClubs one two three)
     (takenQ yes no)
     (takenK yes no)
     (takenRound yes no))
@@ -34,19 +33,11 @@ init [* (hearts	(low	(0.5))	(high	(0.5)))
 	(clubs	(low	(0.5))	(high	(0.5)))
   (theirHearts	(low	(0.5))	(high	(0.5)))
   (theirClubs	(low	(0.5))	(high	(0.5)))
-  (queens	(qh	(0.5))	(qc	(0.5)))
+  (queens	(qh	(0.0))	(qc	(0.0)) (noQ (1.0)))
   (kingHeart	(yes	(0.0))	(no	(1.0)))
   (roundWon	(yes	(0.0))	(no	(1.0)))
      ]
-//
-// some CPTS may be unnormalized -
-// this means all CPTs will be automatically normalized when read in
-unnormalised
-//
-// user keeps coffee if it has it
-// example of an unnormalized CPT -
-// hucno is a predefined dd of the form <xx><yy> where <xx> is a variable name and <yy> is a value
-// that variable can take on. the dd <xx><yy> then is 1 whenever xx' has value yy, zero otherwise.
+
 dd playClubsOF
   (theirClubs' (low (theyPlayClubs' (one (0.6)) (two (0.3)) (three (0.1))))
               (high (theyPlayClubs' (one (0.1)) (two (0.3)) (three (0.6)))))
@@ -59,7 +50,8 @@ enddd
 // not sure how to write the takenQ, takenK, takenRound observation functions
 dd takenQOF
   (queens' (qh (takenQ' (yes (1.0)) (no (0.0))))
-           (qc (takenQ' (yes (1.0)) (no (0.0)))))
+           (qc (takenQ' (yes (1.0)) (no (0.0))))
+           (noQ (takenQ' (yes (0.0)) (no (1.0)))))
 enddd
 dd takenKOF
   (takenK' (yes (takenK' (yes (1.0)) (no (0.0))))
@@ -76,9 +68,26 @@ action playLowHeart
                  (high (hearts' (low (0.60)) (high (0.40))))
   )
   clubs (SAMEclubs)
+  theirHearts (theirHearts (low (theirHearts' (low (0.40)) (high (0.60))))
+                 (high (theirHearts' (low (0.60)) (high (0.40)))))
+  theirClubs (theirClubs (low (theirClubs' (low (0.05)) (high (0.95))))
+                 (high (theirClubs' (low (0.05)) (high (0.95)))))
+
+  queens (queens (qh (queens' (qh (1.0)) (qc (0.0)) (noQ (0.0))))
+                (qc (queens' (qh (0.0)) (qc (1.0)) (noQ (0.0))))
+                (noQ (queens' (qh (0.0)) (qc (0.0)) (noQ (1.0)))))
+  kingHeart (kingHeart (yes (kingHeart' (yes (1.0)) (no (0.0))))
+                        (no (kingHeart' (yes (0.0)) (no (1.0)))))
+  roundWon (roundWon (yes (roundWon' (yes (1.0)) (no (0.0))))
+                      (no (roundWon' (yes (0.0)) (no (1.0)))))
+
+
   observe
     theyPlayClubs (playClubsOF)
     theyPlayHearts (playHeartsOF)
+    takenQ (takenQOF)
+    takenK (takenKOF)
+    takenRound (takenRoundOF)
   endobserve
 endaction
 
@@ -87,9 +96,26 @@ action playHighHeart
                  (high (hearts' (low (0.40)) (high (0.60))))
   )
   clubs (SAMEclubs)
+  theirHearts (theirHearts (low (theirHearts' (low (0.60)) (high (0.40))))
+                 (high (theirHearts' (low (0.40)) (high (0.60)))))
+  theirClubs (theirClubs (low (theirClubs' (low (0.05)) (high (0.95))))
+                 (high (theirClubs' (low (0.05)) (high (0.95)))))
+
+  queens (queens (qh (queens' (qh (1.0)) (qc (0.0)) (noQ (0.0))))
+                (qc (queens' (qh (0.0)) (qc (1.0)) (noQ (0.0))))
+                (noQ (queens' (qh (0.0)) (qc (0.0)) (noQ (1.0)))))
+  kingHeart (kingHeart (yes (kingHeart' (yes (1.0)) (no (0.0))))
+                        (no (kingHeart' (yes (0.0)) (no (1.0)))))
+  roundWon (roundWon (yes (roundWon' (yes (1.0)) (no (0.0))))
+                      (no (roundWon' (yes (0.0)) (no (1.0)))))
+
+
   observe
     theyPlayClubs (playClubsOF)
     theyPlayHearts (playHeartsOF)
+    takenQ (takenQOF)
+    takenK (takenKOF)
+    takenRound (takenRoundOF)
   endobserve
 endaction
 
@@ -98,9 +124,26 @@ action playLowClubs
                  (high (clubs' (low (0.60)) (high (0.40))))
   )
   hearts (SAMEhearts)
+  theirHearts (theirHearts (low (theirHearts' (low (0.05)) (high (0.95))))
+                 (high (theirHearts' (low (0.05)) (high (0.95)))))
+  theirClubs (theirClubs (low (theirClubs' (low (0.40)) (high (0.60))))
+                 (high (theirClubs' (low (0.60)) (high (0.40)))))
+
+  queens (queens (qh (queens' (qh (1.0)) (qc (0.0)) (noQ (0.0))))
+               (qc (queens' (qh (0.0)) (qc (1.0)) (noQ (0.0))))
+               (noQ (queens' (qh (0.0)) (qc (0.0)) (noQ (1.0)))))
+ kingHeart (kingHeart (yes (kingHeart' (yes (1.0)) (no (0.0))))
+                       (no (kingHeart' (yes (0.0)) (no (1.0)))))
+ roundWon (roundWon (yes (roundWon' (yes (1.0)) (no (0.0))))
+                     (no (roundWon' (yes (0.0)) (no (1.0)))))
+
+
   observe
     theyPlayClubs (playClubsOF)
     theyPlayHearts (playHeartsOF)
+    takenQ (takenQOF)
+    takenK (takenKOF)
+    takenRound (takenRoundOF)
   endobserve
 endaction
 
@@ -109,19 +152,39 @@ action playHighClubs
                  (high (clubs' (low (0.40)) (high (0.60))))
   )
   hearts (SAMEhearts)
+  theirHearts (theirHearts (low (theirHearts' (low (0.05)) (high (0.95))))
+                 (high (theirHearts' (low (0.05)) (high (0.95)))))
+  theirClubs (theirClubs (low (theirClubs' (low (0.60)) (high (0.40))))
+                 (high (theirClubs' (low (0.40)) (high (0.60)))))
+
+ queens (queens (qh (queens' (qh (1.0)) (qc (0.0)) (noQ (0.0))))
+               (qc (queens' (qh (0.0)) (qc (1.0)) (noQ (0.0))))
+               (noQ (queens' (qh (0.0)) (qc (0.0)) (noQ (1.0)))))
+ kingHeart (kingHeart (yes (kingHeart' (yes (1.0)) (no (0.0))))
+                       (no (kingHeart' (yes (0.0)) (no (1.0)))))
+ roundWon (roundWon (yes (roundWon' (yes (1.0)) (no (0.0))))
+                     (no (roundWon' (yes (0.0)) (no (1.0)))))
+
+
+
   observe
     theyPlayClubs (playClubsOF)
     theyPlayHearts (playHeartsOF)
+    takenQ (takenQOF)
+    takenK (takenKOF)
+    takenRound (takenRoundOF)
   endobserve
 endaction
 
 
-reward [+  (takenQ	(yes	(-25.0))
-		(no	(0.0)))
-    (takenK	(yes	(-75.0))
-		(no	(0.0)))
+reward [+
+    //(takenQ	(yes	(-25.0))
+		//(no	(0.0)))
+    //(takenK	(yes	(-75.0))
+		//(no	(0.0)))
     (takenRound	(yes	(-15.0))
-    (no	(0.0)))]
+    (no	(0.0)))
+    ]
 
 discount 0.9
 tolerance 0.001
